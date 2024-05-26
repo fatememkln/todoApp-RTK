@@ -1,12 +1,19 @@
 import { useState } from "react";
-
+import { useDispatch } from "react-redux";
+import { addTodo } from "../../features/todo/todoSlice";
 
 const AddTodoForm = () => {
   const [value, setValue] = useState("");
+  const dispatch = useDispatch();
 
+  const handleSubmit = () => {
+    e.preventDefault();
+    if (!value) return;
+    dispatch(addTodo({ title: value }));
+  };
 
   return (
-    <form className={`form-inline mt-3 mb-4`} >
+    <form className={`form-inline mt-3 mb-4`} onSubmit={handleSubmit}>
       <label htmlFor="name" className="mb-1">
         Name
       </label>
