@@ -6,10 +6,11 @@ const AddTodoForm = () => {
   const [value, setValue] = useState("");
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!value) return;
     dispatch(addTodo({ title: value }));
+    setValue("");
   };
 
   return (
