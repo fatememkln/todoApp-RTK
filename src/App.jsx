@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import AddTodoForm from "./components/Todos/AddTodoForm";
-import TodoList from "./components/Todos/TodoList";
+import AddTodoForm from "./components/todos/AddTodoForm";
+import TodoList from "./components/todos/TodoList";
+
 
 function App() {
   return (
