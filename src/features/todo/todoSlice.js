@@ -15,6 +15,22 @@ export const getAsyncTodos = createAsyncThunk(
   }
 );
 
+export const addAsyncTodo = createAsyncThunk(
+  "todos/addAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/todos", {
+        title: payload.title,
+        id: Date.now(),
+        completed: false,
+      });
+      return response.data;
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+
 const todoSlice = createSlice({
   name: "todos",
   initialState: {
@@ -58,6 +74,13 @@ const todoSlice = createSlice({
       state.loading = false;
       state.todos = [];
       state.error = action.payload;
+    },
+    [addAsyncTodo.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [addAsyncTodo.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.todos.push(action.payload);
     },
   },
 });
