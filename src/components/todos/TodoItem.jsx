@@ -20,7 +20,7 @@ const TodoItem = ({ id, title, completed }) => {
             type="checkbox"
             className="mr-3"
             checked={completed}
-            onClick={() =>
+            onChange={() =>
               dispatch(toggleAsyncTodo({ id, completed: !completed }))
             }
           ></input>
