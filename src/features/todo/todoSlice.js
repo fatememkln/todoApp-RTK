@@ -31,6 +31,32 @@ export const addAsyncTodo = createAsyncThunk(
   }
 );
 
+export const deleteAsyncTodo = createAsyncThunk(
+  "todos/deleteAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      await api.delete(`/todos/${payload.id}`);
+      return { id: payload.id };
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+
+export const toggleAsyncTodo = createAsyncThunk(
+  "todos/toggleAsyncTodo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/todos/${payload.id}`, {
+        completed: payload.completed,
+      });
+      return response.data;
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+
 const todoSlice = createSlice({
   name: "todos",
   initialState: {
@@ -38,27 +64,27 @@ const todoSlice = createSlice({
     loading: false,
     error: "",
   },
-  reducers: {
-    addTodo: (state, action) => {
-      const newTodo = {
-        id: Date.now(),
-        title: action.payload.title,
-        completed: false,
-      };
-      state.todos.push(newTodo);
-    },
-    toggleTodo: (state, action) => {
-      const selectedTodo = state.todos.find(
-        (todo) => todo.id === Number(action.payload.id)
-      );
-      selectedTodo.completed = !selectedTodo.completed;
-    },
-    deleteTodo: (state, action) => {
-      state.todos = state.todos.filter(
-        (todo) => todo.id !== Number(action.payload.id)
-      );
-    },
-  },
+  // reducers: {
+  //   addTodo: (state, action) => {
+  //     const newTodo = {
+  //       id: Date.now(),
+  //       title: action.payload.title,
+  //       completed: false,
+  //     };
+  //     state.todos.push(newTodo);
+  //   },
+  //   toggleTodo: (state, action) => {
+  //     const selectedTodo = state.todos.find(
+  //       (todo) => todo.id === Number(action.payload.id)
+  //     );
+  //     selectedTodo.completed = action.payload.completed;
+  //   },
+  //   deleteTodo: (state, action) => {
+  //     state.todos = state.todos.filter(
+  //       (todo) => todo.id !== Number(action.payload.id)
+  //     );
+  //   },
+  // },
   extraReducers: {
     [getAsyncTodos.pending]: (state, action) => {
       state.loading = true;
@@ -82,9 +108,28 @@ const todoSlice = createSlice({
       state.loading = false;
       state.todos.push(action.payload);
     },
+    [deleteAsyncTodo.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteAsyncTodo.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.todos = state.todos.filter(
+        (todo) => todo.id !== Number(action.payload.id)
+      );
+    },
+    [toggleAsyncTodo.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [toggleAsyncTodo.fulfilled]: (state, action) => {
+      state.loading = false;
+      const selectedTodo = state.todos.find(
+        (todo) => todo.id === Number(action.payload.id)
+      );
+      selectedTodo.completed = action.payload.completed;
+    },
   },
 });
 
-export const { addTodo, deleteTodo, toggleTodo } = todoSlice.actions;
+// export const { addTodo, deleteTodo, toggleTodo } = todoSlice.actions;
 
 export default todoSlice.reducer;
